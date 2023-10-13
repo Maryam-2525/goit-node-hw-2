@@ -1,15 +1,16 @@
 const express = require('express')
-const contacts = require("../../models/contacts.json")
+const contacts = require("../../models/contacts.json");
+const { listContacts, getContactById, addContact } = require('../../models/contacts');
 
 const router = express.Router()
 
 router.get('/', async (req, res, next) => {
-  res.json(contacts);
+  res.json(listContacts());
 })
 
 router.get('/:contactId', async (req, res, next) => {
-  const id = req.params.contactId;
-  const contact = contacts.find(contact => contact.id === id)
+  const {id} = req.params.contactId;
+  const contact = getContactById().find(contact => contact.id === id)
 
   if(!contact){
     res.status(404).json({massage: "contact not found"});
@@ -22,6 +23,8 @@ router.get('/:contactId', async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
+  const {id} = req.params.contactId;
+
 
   const addContact = {
     id: Date.now().toString(),
@@ -33,8 +36,8 @@ router.post('/', async (req, res, next) => {
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  const id = req.params.contactId;
-  const contact = contacts.filter(contact => contact.id === id)
+  const {id} = req.params.contactId;
+  const contact = removeContact().filter(contact => contact.id === id)
 
   if(!contact){
     res.status(404).json({massage: "massage not found"});
@@ -48,8 +51,8 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', async (req, res, next) => {
-  const id = req.params.contactId;
-  const contact = contacts.push(contact => contact.id === id)
+  const {id} = req.params.contactId;
+  const contact =updateContact().push(contact => contact.id === id)
 
   if(!contact){
     res.status(404).json({massage: "massage not found"});
